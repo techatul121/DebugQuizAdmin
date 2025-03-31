@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+import '../../../common/utils/dialogs/custom_dialog.dart';
+import '../../datagrid/custom_data_grid.dart';
+import '../../datagrid/custom_data_source.dart';
+import '../enums/notification_columns_enum.dart';
+import '../models/notification_model.dart';
+import '../views/create_notification_view.dart';
+
+class NotificationGridContent extends ConsumerStatefulWidget {
+  const NotificationGridContent({super.key, required this.data});
+  final List<NotificationModel> data;
+
+  @override
+  ConsumerState<NotificationGridContent> createState() =>
+      _NotificationGridContentState();
+}
+
+class _NotificationGridContentState
+    extends ConsumerState<NotificationGridContent> {
+  late CustomDataSource<NotificationModel> dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    dataSource = CustomDataSource<NotificationModel>(
+      data: widget.data,
+      rowBuilder: _buildRow,
+    );
+  }
+
+  DataGridRow _buildRow(NotificationModel notification) {
+    return DataGridRow(
+      cells:
+          NotificationColumnsEnum.values.map((column) {
+            final value = column.getValue(notification);
+            return DataGridCell<String>(columnName: column.key, value: value);
+          }).toList(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDataGrid(
+      columns: NotificationColumnsEnum.columns,
+      downloadIcon: const Icon(Icons.add_box),
+      onDownload: (){
+        CustomDialog.showCustomDialog(child: const CreateNotificationView());
+      },
+      verticalScrollEnable: false,
+      data: widget.data,
+      columnWidthMode: ColumnWidthMode.fill,
+      dataSource: dataSource,
+    );
+  }
+}

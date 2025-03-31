@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+
+import '../../../common/constants/app_strings_constants.dart';
+import '../../../common/theme/app_size.dart';
+import '../../../common/utils/dialogs/custom_dialog.dart';
+import '../../../common/widgets/custom_text_widget.dart';
+import '../../insights/widgets/custom_add_floating_button.dart';
+import '../widgets/notification_data_grid.dart';
+import 'create_notification_view.dart';
+
+class NotificationView extends StatelessWidget {
+  const NotificationView({super.key});
+
+  static const String path = '/notifications';
+  static const String name = 'notifications';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: AppSize.size30,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text36W400(AppStrings.notifications),
+        Expanded(child: NotificationDataGrid()),
+      ],
+    );
+  }
+}

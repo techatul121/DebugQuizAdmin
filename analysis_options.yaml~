@@ -1,0 +1,52 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+  
+    - avoid_print
+    - prefer_relative_imports
+    - camel_case_extensions
+    - constant_identifier_names
+    - control_flow_in_finally
+    - curly_braces_in_flow_control_structures
+    - empty_catches
+    - empty_constructor_bodies
+    - empty_statements
+    - file_names
+    - hash_and_equals
+    - implementation_imports
+    - no_duplicate_case_values
+    - null_closures
+    - prefer_const_constructors
+    - prefer_final_fields
+    - prefer_for_elements_to_map_fromIterable
+    - prefer_generic_function_type_aliases
+    - prefer_if_null_operators
+    - prefer_inlined_adds
+    - prefer_int_literals
+    - prefer_is_empty
+    - prefer_single_quotes
+    - sort_child_properties_last
+    - sort_unnamed_constructors_first
+    - slash_for_doc_comments
+    - unawaited_futures
+    - unnecessary_const
+    - use_rethrow_when_possible
+    - valid_regexps
+    - unnecessary_underscores
+
+
+  
+
+analyzer:
+  
+  exclude:
+    - build/**
+    - .dart_tool/**
+    - .idea/**
+    - .vscode/**
+    - android/**
+    - build/**
+    - ios/**
+    - web/**
+    - test/**
