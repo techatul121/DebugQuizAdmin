@@ -10,7 +10,13 @@ enum CategoryColumnsEnum {
   name(key: 'name', title: AppStrings.nameColumn),
   type(key: 'category_type', title: AppStrings.typeColumn),
 
-  status(key: 'status', title: AppStrings.status);
+  status(key: 'status', title: AppStrings.status),
+
+  action(
+    key: 'action',
+    title: AppStrings.actionColumn,
+    columnWidthMode: ColumnWidthMode.auto,
+  );
 
   const CategoryColumnsEnum({
     required this.key,

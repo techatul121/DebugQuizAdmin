@@ -27,8 +27,12 @@ class _State extends AutoDisposeNotifier<PageState<List<CategoryModel>>> {
         state = PageErrorState(l);
       },
       (r) {
-        final data = r.map((e) => CategoryModel.fromJson(e)).toList();
-        state = PageLoadedState(data);
+        if (r.isNotEmpty) {
+          final data = r.map((e) => CategoryModel.fromJson(e)).toList();
+          state = PageLoadedState(r.isEmpty ? [] : data);
+        } else {
+          state = PageErrorState(DBException(message: 'No Data Found'));
+        }
       },
     );
   }

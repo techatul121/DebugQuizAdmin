@@ -68,14 +68,9 @@ class AppStrings {
   static const String logout = 'Logout';
   static const String category = 'Category';
 
-  /// user activity
+  /// Categories
 
-  static const String profileDetails = 'Profile Details';
-  static const String activities = 'Activities';
-
-  static const String projectCompared = 'Project Compared';
-  static const String unitAnalyzed = 'Unit Analyzed';
-  static const String projectViews = 'Project Viewed';
+  static const String categoryType = 'Category Type';
 
   ///dashboard
   static const String users = 'Users';
