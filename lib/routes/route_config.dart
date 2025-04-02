@@ -14,6 +14,8 @@ import '../modules/login/states/auth_states.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/notifications/views/notification_view.dart';
 
+import '../modules/questions/views/question_view.dart';
+import '../modules/quizes/views/quizes_view.dart';
 import '../modules/settings/views/settings_view.dart';
 
 import 'transition/page_transition.dart';
@@ -48,6 +50,18 @@ final routerProvider = Provider.autoDispose<GoRouter>((ref) {
             path: CategoryView.path,
             name: CategoryView.name,
             pageBuilder: (_) => const CategoryView(),
+          ),
+
+          CustomGoRoute(
+            path: QuestionView.path,
+            name: QuestionView.name,
+            pageBuilder: (_) => const QuestionView(),
+          ),
+
+          CustomGoRoute(
+            path: QuizesView.path,
+            name: QuizesView.name,
+            pageBuilder: (_) => const QuizesView(),
           ),
 
           CustomGoRoute(

@@ -7,6 +7,8 @@ import '../../modules/dashboard/views/dashboard_view.dart';
 import '../../modules/login/views/login_view.dart';
 import '../../modules/notifications/views/notification_view.dart';
 
+import '../../modules/questions/views/question_view.dart';
+import '../../modules/quizes/views/quizes_view.dart';
 import '../../modules/settings/views/settings_view.dart';
 
 import '../route_config.dart';
@@ -31,6 +33,14 @@ class _Notifier extends AutoDisposeNotifier {
 
   void categoryView() {
     _routerConfig.goNamed(CategoryView.name);
+  }
+
+  void questionView() {
+    _routerConfig.goNamed(QuestionView.name);
+  }
+
+  void quizesView() {
+    _routerConfig.goNamed(QuizesView.name);
   }
 
   void notificationsView() {

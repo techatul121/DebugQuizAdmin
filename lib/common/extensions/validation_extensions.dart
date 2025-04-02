@@ -71,6 +71,16 @@ extension ValidationExtensionsForNull<T> on T? {
   }
 }
 
+extension ValidationTimeExtensions on int {
+  bool validTime(String fieldName) {
+    if (this == 0) {
+      CustomToast.showError('${AppStrings.invalid} $fieldName');
+      return false;
+    }
+    return true;
+  }
+}
+
 extension ValidationExtensionsForMap on Map<String, String> {
   bool validateMapValue({required String key, required String fieldName}) {
     if ((this[key] ?? '').trim().isEmpty) {

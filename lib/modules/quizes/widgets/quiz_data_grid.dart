@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -10,26 +12,31 @@ import '../../../common/utils/dialogs/custom_dialog.dart';
 import '../../../common/widgets/custom_action_widget.dart';
 import '../../datagrid/custom_data_grid.dart';
 import '../../datagrid/custom_data_source.dart';
-import '../enums/category_columns_enum.dart';
-import '../models/category_model.dart';
-import '../models/category_update_request_model.dart';
-import '../providers/category_provider.dart';
-import '../providers/delete_category_provider.dart';
-import '../providers/edit_category_provider.dart';
-import '../views/create_category_view.dart';
-import '../views/update_category_view.dart';
+
+import '../enums/quiz_columns_enums.dart';
+
+import '../models/quiz_model.dart';
+
+import '../models/update_quiz_request_model.dart';
+import '../providers/delete_quiz_provider.dart';
+
+import '../providers/edit_quiz_provider.dart';
+import '../providers/quiz_provider.dart';
+import '../views/create_quiz_view.dart';
+
+import '../views/update_quiz_view.dart';
 import 'custom_switch_widget.dart';
 
-class CategoryDataGrid extends ConsumerStatefulWidget {
-  const CategoryDataGrid({super.key});
+class QuizDataGrid extends ConsumerStatefulWidget {
+  const QuizDataGrid({super.key});
 
   @override
-  ConsumerState<CategoryDataGrid> createState() => _CategoryDataGridState();
+  ConsumerState<QuizDataGrid> createState() => _QuizDataGridState();
 }
 
-class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
-  late CustomDataSource<CategoryModel> dataSource;
-  final pageState = ValueNotifier<PageState<List<CategoryModel>>>(
+class _QuizDataGridState extends ConsumerState<QuizDataGrid> {
+  late CustomDataSource<QuizModel> dataSource;
+  final pageState = ValueNotifier<PageState<List<QuizModel>>>(
     PageLoadingState(),
   );
   final forceUpdateToPager = ValueNotifier(false);
@@ -37,19 +44,19 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
   @override
   void initState() {
     super.initState();
-    dataSource = CustomDataSource<CategoryModel>(
+    dataSource = CustomDataSource<QuizModel>(
       forceUpdateToGrid: () {
         forceUpdateToPager.value = true;
       },
     );
   }
 
-  DataGridRow _buildRow(CategoryModel category, int index) {
-    final jsonData = category.toJson();
+  DataGridRow _buildRow(QuizModel quiz, int index) {
+    final jsonData = quiz.toJson();
     return DataGridRow(
       cells:
-          CategoryColumnsEnum.values.map((column) {
-            if (column == CategoryColumnsEnum.status) {
+          QuizColumnsEnum.values.map((column) {
+            if (column == QuizColumnsEnum.status) {
               return DataGridCell(
                 columnName: column.key,
                 value: Align(
@@ -62,10 +69,10 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
                             'Are you sure want ${value ? "Enabled" : "Disabled"}?',
                         onConfirm: () {
                           ref
-                              .read(editCategoryProvider.notifier)
-                              .editCategory(
-                                model: CategoryUpdateRequestModel(
-                                  id: category.id,
+                              .read(editQuizProvider.notifier)
+                              .editQuiz(
+                                model: UpdateQuizRequestModel(
+                                  id: quiz.id,
                                   status: value,
                                 ),
                               );
@@ -75,22 +82,20 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
                   ),
                 ),
               );
-            } else if (column == CategoryColumnsEnum.action) {
+            } else if (column == QuizColumnsEnum.action) {
               return DataGridCell(
                 columnName: column.key,
                 value: CustomActionWidget(
                   onEdit: () {
-                    CustomDialog.dialog(
-                      child: UpdateCategoryView(categoryModel: category),
-                    );
+                    CustomDialog.dialog(child: UpdateQuizView(quizModel: quiz));
                   },
                   onDelete: () {
                     CustomDialog.confirmDialog(
                       message: 'Are you sure want delete?',
                       onConfirm: () {
                         ref
-                            .read(deleteCategoryProvider.notifier)
-                            .deleteCategory(id: category.id);
+                            .read(deleteQuizProvider.notifier)
+                            .deleteQuiz(id: quiz.id);
                       },
                     );
                   },
@@ -100,7 +105,7 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
               return DataGridCell(
                 columnName: column.key,
                 value:
-                    column == CategoryColumnsEnum.indexColumn
+                    column == QuizColumnsEnum.indexColumn
                         ? index
                         : jsonData[column.key],
               );
@@ -118,7 +123,8 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(categoryProvider, (previous, next) {
+    ref.listen(quizProvider, (previous, next) {
+      log('Api call for quiz read');
       pageState.value = next;
       forceUpdateToPager.value = false;
 
@@ -132,7 +138,7 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
         dataSource.resetSource();
       }
     });
-    ref.listen(editCategoryProvider, (previous, next) {
+    ref.listen(editQuizProvider, (previous, next) {
       if (next is PageLoadingState) {
         CustomDialog.loading(message: AppStrings.loading);
       } else if (next is PageErrorState) {
@@ -140,13 +146,13 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
         CustomDialog.closeDialog();
       } else if (next is PageLoadedState) {
         CustomToast.showSuccess(next.model!.message);
-        ref.invalidate(categoryProvider);
+        ref.invalidate(quizProvider);
         CustomDialog.closeDialog();
         CustomDialog.closeDialog();
       }
     });
 
-    ref.listen(deleteCategoryProvider, (previous, next) {
+    ref.listen(deleteQuizProvider, (previous, next) {
       if (next is PageLoadingState) {
         CustomDialog.loading(message: AppStrings.loading);
       } else if (next is PageErrorState) {
@@ -154,22 +160,22 @@ class _CategoryDataGridState extends ConsumerState<CategoryDataGrid> {
         CustomDialog.closeDialog();
       } else if (next is PageLoadedState) {
         CustomToast.showSuccess(next.model!.message);
-        ref.invalidate(categoryProvider);
+        ref.invalidate(quizProvider);
         CustomDialog.closeDialog();
         CustomDialog.closeDialog();
       }
     });
 
     return CustomDataGrid(
-      columns: CategoryColumnsEnum.columns,
+      columns: QuizColumnsEnum.columns,
       downloadIcon: const Icon(Icons.add_box),
       forceUpdateToPager: forceUpdateToPager,
       onDownload: () {
-        CustomDialog.dialog(child: const CreateCategoryView());
+        CustomDialog.dialog(child: const CreateQuizView());
       },
       pageState: pageState,
       onRefresh: () {
-        ref.invalidate(categoryProvider);
+        ref.invalidate(quizProvider);
       },
 
       onRowsPerPageChanged: (value) {

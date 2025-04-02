@@ -67,10 +67,17 @@ class AppStrings {
   static const String settings = 'Settings';
   static const String logout = 'Logout';
   static const String category = 'Category';
+  static const String quizes = 'Quizes';
+  static const String questions = 'Questions';
 
   /// Categories
 
   static const String categoryType = 'Category Type';
+
+  /// Quiz
+
+  static const String shortDescription = 'Short Description';
+  static const String selectCategory = 'Select category';
 
   ///dashboard
   static const String users = 'Users';
@@ -143,6 +150,10 @@ class AppStrings {
   static const String typeColumn = 'Type';
   static const String index = 'Index';
   static const String titleColumn = 'Title';
+  static const String totalTime = 'Total Time(Sec)';
+  static const String quizTypeColumn = 'Quiz Type ';
+  static const String categoryNameColumn = 'Category Name';
+  static const String shortDescriptionColumn = 'Short Description';
   static const String sectionNameColumn = 'Section Name';
   static const String notificationTypeColumn = 'Notification Type';
   static const String updatedAtColumn = 'Updated At';

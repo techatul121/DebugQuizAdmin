@@ -70,6 +70,7 @@ class _DBClient extends Notifier {
         orderBy,
         ascending: false,
       );
+      debugPrint('[Db read] update  ${await postgrestTransform.count()}');
       if (usePagination) {
         postgrestTransform = postgrestTransform.range((page - 1), limit);
       }
@@ -122,13 +123,13 @@ class _DBClient extends Notifier {
   }
 
   /// Read Rpc
-  DBResponse<Map<String, dynamic>> readRpc({
-    required DBTablesEnum rpcMethod,
+  DBResponse<List<dynamic>> readRpc({
+    required DBRpcEnum rpcMethod,
     Map<String, dynamic>? queryparams,
   }) async {
     try {
       final res = await _dbClient.rpc(rpcMethod.name, params: queryparams);
-
+      log('Repc reapose $res');
       return right(res ?? {});
     } on PostgrestException catch (e) {
       return left(DBException(message: e.message));
@@ -155,7 +156,9 @@ class _DBClient extends Notifier {
     required String refereshToken,
   }) async {
     try {
+      await _dbClient.auth.setSession(refereshToken);
       final response = await _dbClient.auth.refreshSession(refereshToken);
+
       return right(response.session!.toJson());
     } on AuthException catch (e) {
       return left(DBException(message: e.message));

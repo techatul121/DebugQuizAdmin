@@ -5,9 +5,11 @@ import '../../../common/constants/app_strings_constants.dart';
 import '../../../common/extensions/context_extensions.dart';
 import '../../../common/extensions/strings_extensions.dart';
 import '../../../common/extensions/validation_extensions.dart';
+import '../../../common/states/page_state.dart';
 import '../../../common/theme/app_colors.dart';
 import '../../../common/theme/app_geometry.dart';
 import '../../../common/theme/app_size.dart';
+import '../../../common/utils/custom_toast.dart';
 import '../../../common/utils/dialogs/custom_dialog.dart';
 import '../../../common/widgets/buttons/custom_filled_button.dart';
 import '../../../common/widgets/custom_drop_down_menu.dart';
@@ -15,33 +17,37 @@ import '../../../common/widgets/custom_sized_box.dart';
 import '../../../common/widgets/custom_text_form_field.dart';
 import '../../../common/widgets/custom_text_widget.dart';
 import '../enums/category_type_enum.dart';
-import '../models/category_model.dart';
-import '../models/category_update_request_model.dart';
-import '../providers/edit_category_provider.dart';
+import '../models/category_request_model.dart';
+import '../providers/add_category_provider.dart';
+import '../providers/category_provider.dart';
 
-class UpdateCategoryView extends StatefulWidget {
-  const UpdateCategoryView({super.key, required this.categoryModel});
-  final CategoryModel categoryModel;
+class CreateCategoryView extends StatefulWidget {
+  const CreateCategoryView({super.key});
+
   @override
-  State<UpdateCategoryView> createState() => _UpdateCategoryViewState();
+  State<CreateCategoryView> createState() => _CreateCategoryViewState();
 }
 
-class _UpdateCategoryViewState extends State<UpdateCategoryView> {
+class _CreateCategoryViewState extends State<CreateCategoryView> {
   String name = '';
-
   CategoryTypeEnum? categoryTypeEnum;
-
-  @override
-  void initState() {
-    super.initState();
-    name = widget.categoryModel.name;
-    categoryTypeEnum = widget.categoryModel.categoryType;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
+        ref.listen(addCategoryProvider, (previous, next) {
+          if (next is PageLoadingState) {
+            CustomDialog.loading(message: AppStrings.loading);
+          } else if (next is PageErrorState) {
+            CustomToast.showError(next.exception!.message);
+            CustomDialog.closeDialog();
+          } else if (next is PageLoadedState) {
+            CustomToast.showSuccess(next.model!.message);
+            ref.invalidate(categoryProvider);
+            CustomDialog.closeDialog();
+            CustomDialog.closeDialog();
+          }
+        });
         return SizedBox(
           width: context.deviceWidth * 0.3,
           child: SingleChildScrollView(
@@ -53,7 +59,7 @@ class _UpdateCategoryViewState extends State<UpdateCategoryView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text22W400(AppStrings.update),
+                      const Text22W400(AppStrings.create),
                       IconButton(
                         onPressed: () {
                           CustomDialog.closeDialog();
@@ -67,7 +73,6 @@ class _UpdateCategoryViewState extends State<UpdateCategoryView> {
                   CustomTextFormField(
                     title: AppStrings.nameColumn,
                     borderRadius: AppBorderRadius.a15,
-                    initialValue: name,
                     borderColor: AppColors.accentColor,
                     onChanged: (value) {
                       name = value;
@@ -76,7 +81,6 @@ class _UpdateCategoryViewState extends State<UpdateCategoryView> {
                   const SBH20(),
                   CustomDropDownMenu<CategoryTypeEnum>(
                     title: AppStrings.categoryType,
-                    initialValue: categoryTypeEnum,
                     onSelect: (value) {
                       categoryTypeEnum = value;
                     },
@@ -95,7 +99,7 @@ class _UpdateCategoryViewState extends State<UpdateCategoryView> {
 
                   UnconstrainedBox(
                     child: CustomFilledButton(
-                      text: AppStrings.update,
+                      text: AppStrings.create,
                       width: AppSize.size250,
                       height: AppSize.size60,
                       onTap: () {
@@ -104,12 +108,11 @@ class _UpdateCategoryViewState extends State<UpdateCategoryView> {
                               AppStrings.categoryType,
                             )) {
                           ref
-                              .read(editCategoryProvider.notifier)
-                              .editCategory(
-                                model: CategoryUpdateRequestModel(
-                                  id: widget.categoryModel.id,
+                              .read(addCategoryProvider.notifier)
+                              .addCategory(
+                                model: CategoryRequestModel(
                                   name: name,
-                                  categoryType: categoryTypeEnum!,
+                                  categoryType: categoryTypeEnum!.name,
                                 ),
                               );
                         }

@@ -15,8 +15,11 @@ import '../../../routes/utils/redirect_utils.dart';
 import '../../category/views/category_view.dart';
 import '../../dashboard/views/dashboard_view.dart';
 
+import '../../login/provider/auth_provider.dart';
 import '../../notifications/views/notification_view.dart';
 
+import '../../questions/views/question_view.dart';
+import '../../quizes/views/quizes_view.dart';
 import '../../settings/views/settings_view.dart';
 
 import 'desktop/custom_menu_tile.dart';
@@ -73,6 +76,23 @@ class CustomSideBar extends StatelessWidget {
                         ref.read(redirectScreenUtil.notifier).categoryView();
                       },
                     ),
+
+                    CustomMenuTile(
+                      title: MainMenuEnums.quizes.title,
+                      iconPath: MainMenuEnums.quizes.iconPath,
+                      isSelected: currentPath == QuizesView.path,
+                      onTap: () {
+                        ref.read(redirectScreenUtil.notifier).quizesView();
+                      },
+                    ),
+                    CustomMenuTile(
+                      title: MainMenuEnums.questions.title,
+                      iconPath: MainMenuEnums.questions.iconPath,
+                      isSelected: currentPath == QuestionView.path,
+                      onTap: () {
+                        ref.read(redirectScreenUtil.notifier).questionView();
+                      },
+                    ),
                     CustomMenuTile(
                       title: MainMenuEnums.notifications.title,
                       iconPath: MainMenuEnums.notifications.iconPath,
@@ -112,7 +132,7 @@ class CustomSideBar extends StatelessWidget {
                   CustomDialog.confirmDialog(
                     message: AppStrings.logoutConfirmation,
                     onConfirm: () {
-                      //  ref.read(authProvider.notifier).deAuthenticate();
+                      ref.read(authProvider.notifier).deAuthenticate();
                     },
                   );
                 },

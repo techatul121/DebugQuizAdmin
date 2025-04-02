@@ -1,0 +1,1 @@
+enum QuizTypeEnum { free, paid }

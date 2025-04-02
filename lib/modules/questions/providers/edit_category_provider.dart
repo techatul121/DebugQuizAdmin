@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,8 +6,9 @@ import '../../../common/models/base_response_model.dart';
 import '../../../common/states/page_state.dart';
 import '../../../services/remote/db/db_exports.dart';
 
+import '../models/category_update_request_model.dart';
 
-final deleteCategoryProvider =
+final editCategoryProvider =
     AutoDisposeNotifierProvider<_State, PageState<BaseResponseModel>>(
       _State.new,
     );
@@ -17,18 +19,23 @@ class _State extends AutoDisposeNotifier<PageState<BaseResponseModel>> {
     return PageInitialState();
   }
 
-  Future<void> deleteCategory({required int id}) async {
+  Future<void> editCategory({required CategoryUpdateRequestModel model}) async {
+    log('Update request model ${model.toJson()}');
     state = PageLoadingState();
     final response = await ref
         .read(dbClientProvider.notifier)
-        .delete(table: DBTablesEnum.quizCategories, filter: ('id', id));
+        .update(
+          table: DBTablesEnum.quizCategories,
+          data: model.toJson(),
+          filter: ('id', model.id),
+        );
     response.fold(
       (l) {
         state = PageErrorState(l);
       },
       (r) {
         state = PageLoadedState(
-          BaseResponseModel(status: true, message: 'Deleted successfully'),
+          BaseResponseModel(status: true, message: 'Updated successfully'),
         );
       },
     );

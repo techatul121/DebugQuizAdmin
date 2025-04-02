@@ -1,12 +1,10 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common/models/base_response_model.dart';
 import '../../../common/states/page_state.dart';
 import '../../../services/remote/db/db_exports.dart';
 
-
-final deleteCategoryProvider =
+final deleteQuizProvider =
     AutoDisposeNotifierProvider<_State, PageState<BaseResponseModel>>(
       _State.new,
     );
@@ -17,11 +15,11 @@ class _State extends AutoDisposeNotifier<PageState<BaseResponseModel>> {
     return PageInitialState();
   }
 
-  Future<void> deleteCategory({required int id}) async {
+  Future<void> deleteQuiz({required int id}) async {
     state = PageLoadingState();
     final response = await ref
         .read(dbClientProvider.notifier)
-        .delete(table: DBTablesEnum.quizCategories, filter: ('id', id));
+        .delete(table: DBTablesEnum.quizzes, filter: ('id', id));
     response.fold(
       (l) {
         state = PageErrorState(l);
